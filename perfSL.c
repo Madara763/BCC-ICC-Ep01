@@ -1,7 +1,11 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+#include "EliminacaoGauss.h"
+
 #define uint unsigned int
+
+void imprimeMatriz(double **M, double *B, unsigned int n);
 int main(){
 	//Lê o tamanho da matriz
 	uint n;
@@ -37,13 +41,27 @@ int main(){
 		scanf("%lf", &termos_ind[l]);
 	}	
 	
-	//Imprime a matriz e os termos
-	for(uint l=0; l<n; l++){
-        for(uint c=0; c<n; c++){
-            printf("%.2lf ", matriz[l][c]);
-        }
-        printf("%.2lf\n", termos_ind[l]);
-    }	
+	imprimeMatriz(matriz, termos_ind, n);	
+	eliminacaoGauss_PivoteamentoParcial(matriz, termos_ind, n);
+	imprimeMatriz(matriz, termos_ind, n);
+	
 
+	//libera memória e encerra o programa
+	for(unsigned int i=0; i<n; i++)
+		free(matriz[i]);
+	free(matriz);
+	free(termos_ind);
 	return 0;
+}
+
+//Imprime a matriz e os termos
+void imprimeMatriz(double **M, double *B, unsigned int n){
+	for(uint l=0; l<n; l++){
+		for(uint c=0; c<n; c++){
+        	printf("%.2lf ", M[l][c]);
+    	}
+    	printf("%.2lf\n", B[l]);
+    }
+	
+	printf("\n");
 }
