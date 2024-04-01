@@ -50,10 +50,8 @@ void pivoteamento(real_t **M, real_t *B, uint n){
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Implementa pivoteamento parcial
 void eliminacaoGauss_Piv(real_t **M, real_t *B, uint n){
-    
     pivoteamento(M, B, n);
     eliminacaoGauss(M, B, n);
-
 }
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
@@ -70,4 +68,27 @@ void eliminacaoGauss(real_t **M, real_t *B, uint n){
             B[k]-=B[i]*mult;
         }
     }   
+}
+
+//Recebe a matriz, o vetor de t.i e o vetor de variaveis
+void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
+    printf("EG Clássico:\n");
+    printf("<Tempo_em_MS> ms\n");
+    for(uint i=0; i<n; i++)
+        printf("%.2lf ", variaveis[i]);
+    
+    printf("\n");
+    real_t linha;
+    uint c;
+    //----------------------------CALCULA O ERRO ERRADO-----------------------
+    //calcula o erro
+    for(uint l=n; l>0; l--){
+        linha=0.0;
+		for(c=n; c>l; c--)
+			linha+= (M[l-1][c-1] * variaveis[c-1]);
+
+        printf("%.2lf / %.2lf = %.2lf\n", linha, B[c-1], fabs(linha/B[c-1]) );
+		//variaveis[c-1]=((B[l-1] - linha) / M[l-1][c-1] );
+    }
+    printf("\n");
 }
