@@ -42,7 +42,7 @@ int main(){
 	}	
 	
 	imprimeMatriz(matriz, termos_ind, n);	
-	eliminacaoGauss_PivoteamentoParcial(matriz, termos_ind, n);
+	eliminacaoGauss_Piv(matriz, termos_ind, n);
 	imprimeMatriz(matriz, termos_ind, n);
 	
 
@@ -52,7 +52,9 @@ int main(){
 	free(matriz);
 	free(termos_ind);
 	return 0;
-}
+}//Main
+
+
 
 //Imprime a matriz e os termos
 void imprimeMatriz(double **M, double *B, unsigned int n){

@@ -1,4 +1,4 @@
-#include "EliminacaoGauss.h"
+#include "EliminacaoGaussSidel.h"
 
 /*FUNÇÕES AUXILIARES*/
 
@@ -45,29 +45,24 @@ void pivoteamento(real_t **M, real_t *B, uint n){
 }
 
 
-/*MÉTODOS DE ELIMINAÇÃO*/
+/*METODOS DE ELIMINAÇÃO*/
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
-//Implementa pivoteamento parcial
-void eliminacaoGauss_Piv(real_t **M, real_t *B, uint n){
+//Implementa pivoteamento parcial 
+void eliminacaoGaussSidel_Piv(real_t **M, real_t *B, uint n, real_t erro){
     
     pivoteamento(M, B, n);
-    eliminacaoGauss(M, B, n);
+    eliminacaoGaussSidel(M, B, n, erro);
 
 }
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
-//Sem qualquer pivoteamento
-void eliminacaoGauss(real_t **M, real_t *B, uint n){
-    real_t mult;
-    
-    for(uint i=0; i<n; i++){
-        for(uint k=i+1; k<n; k++){
-            mult=M[k][i] / M[i][i];
-            M[k][i]=0.0;
-            for(uint j=i+1; j<n; j++)
-                M[k][j] -= M[i][j] * mult;
-            B[k]-=B[i]*mult;
-        }
-    }   
+//Sem nenhum pivoteamento 
+void eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
+    real_t erro_atual=0;
+    uint max_itr=1000000, itr=0;
+    while(erro_atual > erro){
+        
+        itr++;
+    }
 }
