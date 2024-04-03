@@ -7,6 +7,7 @@ Davi Lazzarin - 29/03/2024
 #ifndef _ELIMINA_GAUSS_
 #define _ELIMINA_GAUSS_
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 #define real_t double
@@ -23,5 +24,7 @@ void eliminacaoGauss(real_t **M, real_t *B, uint n);
 //Recebe a matriz o vetor de t.i e o vetor de variaveis
 void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n);
 
+//Aloca e retorna um vetor com as variaveis do SL já triangularizado
+real_t* isola_variaveis(real_t **M, real_t *B, unsigned int n);
 
 #endif

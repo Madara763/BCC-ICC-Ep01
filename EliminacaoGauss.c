@@ -70,25 +70,38 @@ void eliminacaoGauss(real_t **M, real_t *B, uint n){
     }   
 }
 
+//IMPRESSÂO 
 //Recebe a matriz, o vetor de t.i e o vetor de variaveis
 void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
     printf("EG Clássico:\n");
     printf("<Tempo_em_MS> ms\n");
     for(uint i=0; i<n; i++)
-        printf("%.2lf ", variaveis[i]);
+        printf("%.5lf ", variaveis[i]);
     
     printf("\n");
     real_t linha;
     uint c;
-    //----------------------------CALCULA O ERRO ERRADO-----------------------
-    //calcula o erro
+    
+    //calcula o erro e salva em erros
+    real_t *erros=malloc(sizeof(real_t)*n);
+    if(!erros){
+        perror("Erro de Alocação!!!\n");
+        exit(1);
+    }
+
     for(uint l=n; l>0; l--){
         linha=0.0;
 		for(c=n; c>l; c--)
 			linha+= (M[l-1][c-1] * variaveis[c-1]);
 
-        printf("%.2lf / %.2lf = %.2lf\n", linha, B[c-1], fabs(linha/B[c-1]) );
-		//variaveis[c-1]=((B[l-1] - linha) / M[l-1][c-1] );
+        linha=fabs((B[c-1]-linha)/M[l-1][c-1]);
+        erros[c-1]=fabs(linha-variaveis[c-1]);
     }
+    //imprime os erros
+    for(uint i=0; i<n; i++)
+        printf("%.5lf ", erros[i]);
+    
+    //Libera memória
+    free(erros);
     printf("\n");
 }

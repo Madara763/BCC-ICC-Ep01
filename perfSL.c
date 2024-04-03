@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include <math.h>
 #include "EliminacaoGauss.h"
+#include "EliminacaoGaussSidel.h"
 
 #define uint unsigned int
 #define real_t double
@@ -14,15 +15,16 @@ int main(){
 	scanf("%d", &n);
 	
 	//Aloca e verifica matriz
-	real_t **matriz;
-	matriz=malloc(sizeof(real_t*)*n);
-	if(!matriz){
+	real_t **matriz=malloc(sizeof(real_t*)*n);
+	real_t **matriz_copia=malloc(sizeof(real_t*)*n);
+	if(!matriz || !matriz_copia){
 		perror("Erro de alocação.\n");
 		return 1;
 	}
 	for(uint i=0; i<n; i++){
 		matriz[i]=malloc(sizeof(real_t)*n);
-		if(!matriz[i]){
+		matriz_copia[i]=malloc(sizeof(real_t)*n);
+		if(!matriz[i] || !matriz_copia[i]){
 			perror("Erro de alocação.\n");
 			return 1;
 		}
@@ -30,7 +32,8 @@ int main(){
 	
 	//Aloca e testa os termos independentes
 	real_t *termos_ind=malloc(sizeof(real_t)*n);
-	if(!termos_ind){
+	real_t *termos_ind_copia=malloc(sizeof(real_t)*n);
+	if(!termos_ind || !termos_ind_copia){
 		perror("Erro de alocação.\n");
         return 1;
 	}
@@ -39,30 +42,45 @@ int main(){
 	for(uint l=0; l<n; l++){
 		for(uint c=0; c<n; c++){
 			scanf("%lf", &matriz[l][c]);
+			matriz_copia[l][c] = matriz[l][c];
 		}
 		scanf("%lf", &termos_ind[l]);
+		termos_ind_copia[l]=termos_ind[l];
 	}	
 	
+
+	//INICIO DOS METODOS 
 	imprimeMatriz(matriz, termos_ind, n);	
-	/*eliminacaoGauss_Piv(matriz, termos_ind, n);
-	*/
+	
+	//Teste GS
+	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
+	eliminacaoGaussSidel(matriz_copia, termos_ind_copia, n, 0.05);	
+
+
+
+	//TESTE EG Clássico
+	/*
+	eliminacaoGauss(matriz, termos_ind, n);
 	real_t* variaveis=isola_variaveis(matriz, termos_ind, n);
 	if(!variaveis){
 		perror("Erro de alocação.\n");
         return 1;
 	}
-	
-
 	imprimeGauss(matriz, termos_ind, variaveis, n);
-	//imprimeMatriz(matriz, termos_ind, n);
-	
+	imprimeMatriz(matriz, termos_ind, n);
+	free(variaveis);
+	*/
 
 	//libera memória e encerra o programa
-	for(unsigned int i=0; i<n; i++)
+	for(unsigned int i=0; i<n; i++){
 		free(matriz[i]);
+		free(matriz_copia[i]);
+	}
 	free(matriz);
+	free(matriz_copia);
 	free(termos_ind);
-	free(variaveis);
+	free(termos_ind_copia);
+	
 	return 0;
 }//Main
 
@@ -72,28 +90,18 @@ int main(){
 void imprimeMatriz(real_t **M, real_t *B, unsigned int n){
 	for(uint l=0; l<n; l++){
 		for(uint c=0; c<n; c++){
-        	printf("%.2lf ", M[l][c]);
+        	printf("%.5lf ", M[l][c]);
     	}
-    	printf("%.2lf\n", B[l]);
+    	printf("%.5lf\n", B[l]);
     }
 	printf("\n");
 }
 
-//Aloca e retorna um vetor com as variaveis do SL já triangularizado
-real_t* isola_variaveis(real_t **M, real_t *B, unsigned int n){
-	//Aloca e testa o vetor de variaveis
-	real_t *variaveis=calloc(n, sizeof(real_t));
-	if(!variaveis)
-        return NULL;
-	real_t linha;
-	uint c;
-	//Isola as variaveis e salva em variaveis
-	for(uint l=n; l>0; l--){
-		linha=0.0;
-		for(c=n; c>l; c--)
-			linha+= (M[l-1][c-1] * variaveis[c-1]);
-
-		variaveis[c-1]=((B[l-1] - linha) / M[l-1][c-1] );
+//Copia matriz para matriz_copia e os termos para termos_copia
+void copiaSL(real_t** matriz, real_t* termos, real_t** matriz_copia, real_t* termos_copia, uint n){
+	for(uint l=0; l<n; l++){
+		for(uint c=0; c<n; c++)
+			matriz_copia[l][c] = matriz[l][c];
+		termos_copia[l]=termos[l];
 	}
-	return variaveis;
 }

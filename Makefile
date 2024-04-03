@@ -1,6 +1,6 @@
 CFLAGS = -Wall -g -O0 # gerar "warnings" detalhados e infos de depuração
  
-objs = perfSL.o EliminacaoGauss.o
+objs = perfSL.o EliminacaoGauss.o EliminacaoGaussSidel.o
 
 # regra default (primeira regra)
 all: perfSL
@@ -11,6 +11,7 @@ perfSL:	$(objs)
 # regras de compilação
 perfSL.o:	perfSL.c
 EliminacaoGauss.o:	EliminacaoGauss.c
+EliminacaoGaussSidel.o:	EliminacaoGaussSidel.c
 
 # remove arquivos temporários
 clean:
