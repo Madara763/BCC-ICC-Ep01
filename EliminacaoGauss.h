@@ -15,16 +15,14 @@ Davi Lazzarin - 29/03/2024
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Implementa pivoteamento parcial
-void eliminacaoGauss_Piv(real_t **M, real_t *B, uint n);
+real_t* eliminacaoGauss_Piv(real_t **M, real_t *B, uint n);
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Sem qualquer pivoteamento
-void eliminacaoGauss(real_t **M, real_t *B, uint n);
+real_t* eliminacaoGauss(real_t **M, real_t *B, uint n);
 
 //Recebe a matriz o vetor de t.i e o vetor de variaveis
 void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n);
 
-//Aloca e retorna um vetor com as variaveis do SL já triangularizado
-real_t* isola_variaveis(real_t **M, real_t *B, unsigned int n);
 
 #endif

@@ -49,15 +49,15 @@ void pivoteamento(real_t **M, real_t *B, uint n){
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Implementa pivoteamento parcial
-void eliminacaoGauss_Piv(real_t **M, real_t *B, uint n){
+real_t* eliminacaoGauss_Piv(real_t **M, real_t *B, uint n){
     pivoteamento(M, B, n);
-    eliminacaoGauss(M, B, n);
+    return eliminacaoGauss(M, B, n);
 }
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Sem qualquer pivoteamento
-void eliminacaoGauss(real_t **M, real_t *B, uint n){
-    real_t mult;
+real_t* eliminacaoGauss(real_t **M, real_t *B, uint n){
+    real_t mult, linha;
     
     for(uint i=0; i<n; i++){
         for(uint k=i+1; k<n; k++){
@@ -67,7 +67,23 @@ void eliminacaoGauss(real_t **M, real_t *B, uint n){
                 M[k][j] -= M[i][j] * mult;
             B[k]-=B[i]*mult;
         }
-    }   
+    }
+
+    //Isola as variaveis
+    real_t* variaveis=malloc(sizeof(real_t)*n);
+    if(!variaveis){ perror("Erro de Alocação!!!\n"); exit(1);}
+    -------------------------------------LOOP INFINITO NO I----------------------------
+    for(uint i=n-1; i>=0; --i){
+        linha=0.0;
+        for(uint k=n-1; k>i; --k){
+            linha+=M[i][k]*B[k];
+            printf("k = %d ", k);
+        }
+        printf("i = %d ", i);
+        //variaveis[i]=(B[i] - linha ) / M[i][i];
+        //printf("Variavel[%d]=%.5lf\n", i, variaveis[i]);
+    }
+    return variaveis;
 }
 
 //IMPRESSÂO 

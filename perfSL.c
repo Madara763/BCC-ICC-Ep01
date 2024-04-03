@@ -7,6 +7,7 @@
 #define uint unsigned int
 #define real_t double
 
+void copiaSL(real_t** matriz, real_t* termos, real_t** matriz_copia, real_t* termos_copia, uint n);
 void imprimeMatriz(real_t **M, real_t *B, unsigned int n);
 real_t* isola_variaveis(real_t **M, real_t *B, unsigned int n);
 int main(){
@@ -49,27 +50,23 @@ int main(){
 	}	
 	
 
-	//INICIO DOS METODOS 
+	//INICIO DOS METODOS
+	real_t* variaveis; 
 	imprimeMatriz(matriz, termos_ind, n);	
 	
 	//Teste GS
-	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
-	eliminacaoGaussSidel(matriz_copia, termos_ind_copia, n, 0.05);	
-
-
-
-	//TESTE EG Clássico
 	/*
-	eliminacaoGauss(matriz, termos_ind, n);
-	real_t* variaveis=isola_variaveis(matriz, termos_ind, n);
-	if(!variaveis){
-		perror("Erro de alocação.\n");
-        return 1;
-	}
-	imprimeGauss(matriz, termos_ind, variaveis, n);
-	imprimeMatriz(matriz, termos_ind, n);
+	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
+	variaveis=eliminacaoGaussSidel_Piv(matriz_copia, termos_ind_copia, n, 0.5);	
+	imprimeGaussSidel(matriz_copia, termos_ind, variaveis, n);
 	free(variaveis);
 	*/
+
+	//TESTE EG Clássico
+	variaveis=eliminacaoGauss_Piv(matriz, termos_ind, n);
+	imprimeGauss(matriz, termos_ind, variaveis, n);
+	free(variaveis);
+	
 
 	//libera memória e encerra o programa
 	for(unsigned int i=0; i<n; i++){

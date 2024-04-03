@@ -13,15 +13,22 @@ Davi Lazzarin - 31/03/2024
 
 #define real_t double
 #define uint unsigned int
-#define MAX_ITR 100
+#define MAX_ITR 10
+#define VLR_INICIAL 0
 #define DBL_MAX    1.7976931348623157E+308
+
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Implementa pivoteamento parcial 
-void eliminacaoGaussSidel_Piv(real_t **M, real_t *B, uint n, real_t erro);
+real_t* eliminacaoGaussSidel_Piv(real_t **M, real_t *B, uint n, real_t erro);
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
-//Sem nenhum pivoteamento 
-void eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro);
+//Sem nenhum pivoteamento
+//Retorna o vetor com as variaveis e não altera a matriz e os T.I
+real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro);
+
+//IMPRESSÂO 
+//Recebe a matriz, o vetor de t.i e o vetor de variaveis
+void imprimeGaussSidel(real_t **M, real_t *B, real_t *variaveis, uint n);
 
 #endif

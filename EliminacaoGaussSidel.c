@@ -49,45 +49,34 @@ void pivoteamento_sidel(real_t **M, real_t *B, uint n){
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Implementa pivoteamento parcial 
-void eliminacaoGaussSidel_Piv(real_t **M, real_t *B, uint n, real_t erro){
-    
+real_t* eliminacaoGaussSidel_Piv(real_t **M, real_t *B, uint n, real_t erro){
     pivoteamento_sidel(M, B, n);
-    eliminacaoGaussSidel(M, B, n, erro);
-
+    return eliminacaoGaussSidel(M, B, n, erro);    
 }
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
-//Sem nenhum pivoteamento 
-void eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
-    real_t erro_atual=DBL_MAX, linha=0.0, variavel=0.0;
+//Sem nenhum pivoteamento
+//Retorna o vetor com as variaveis e não altera a matriz e os T.I
+real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
+    real_t erro_atual=DBL_MAX, linha=0.0;
     uint itr=0;
     //Aloca o vetor de variaveis e o vetor de variaveis da execução anterior
     real_t *variaveis=calloc(n, sizeof(real_t));
-    if(!variaveis){
-        perror("Erro de Alocação!!!\n");
-        exit(1);
-    }
     real_t *variaveis_ante=calloc(n, sizeof(real_t));
-    if(!variaveis_ante){
-        perror("Erro de Alocação!!!\n");
-        exit(1);
-    }
     real_t *erros=calloc(n, sizeof(real_t));
-    if(!erros){
+    if(!variaveis || !variaveis_ante || !erros ){
         perror("Erro de Alocação!!!\n");
         exit(1);
     }
+
 
     while(erro_atual > erro && itr<MAX_ITR){
         for(uint i=0; i<n; i++){
             linha=B[i];
-            for(uint c=0; c<n; c++){
-                if(c != i){
+            for(uint c=0; c<n; c++)
+                if(c != i)
                     linha-=(M[i][c] * variaveis[c]);
-                    //printf("X[%d] = %.5lf / %.5lf\n", i, linha, M[i][i]);
-                }
-            }
-            //printf("X[%d] = %.5lf / %.5lf\n", i, linha, M[i][i]);
+            
             variaveis[i]=(linha/M[i][i]);
             erros[i]=fabs(variaveis[i]-variaveis_ante[i]);
             variaveis_ante[i]=variaveis[i];
@@ -96,27 +85,45 @@ void eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
         for(uint i=0; i<n-1; i++)
             if(erros[i]>erro_atual)
                 erro_atual=erros[i];
-
-        printf("Iteração %d\n", itr);
-        for(uint i=0; i<n; i++)
-            printf("X%d ", i);
-        printf("\n");
-        for(uint i=0; i<n; i++)
-            printf("%.5lf ", variaveis[i]);
-        printf("\n");
         itr++;
     }
-    free(variaveis);
     free(variaveis_ante);
     free(erros);
+    return variaveis;
 }
 
-/*
-printf("Iteração %d\n", itr);
-        for(uint i=0; i<n; i++)
-            printf("X%d ", i);
-        printf("\n");
-        for(uint i=0; i<n; i++)
-            printf("%.5lf ", variaveis[i]);
-        printf("\n");
-*/
+//IMPRESSÂO 
+//Recebe a matriz, o vetor de t.i e o vetor de variaveis
+void imprimeGaussSidel(real_t **M, real_t *B, real_t *variaveis, uint n){
+    printf("GS Clássico:\n");
+    printf("<Tempo_em_MS> ms\n");
+    for(uint i=0; i<n; i++)
+        printf("%.5lf ", variaveis[i]);
+    
+    printf("\n");
+    real_t linha;
+    uint c;
+    
+    //calcula o erro e salva em erros
+    real_t *erros=malloc(sizeof(real_t)*n);
+    if(!erros){
+        perror("Erro de Alocação!!!\n");
+        exit(1);
+    }
+
+    for(uint l=n; l>0; l--){
+        linha=0.0;
+		for(c=n; c>l; c--)
+			linha+= (M[l-1][c-1] * variaveis[c-1]);
+
+        linha=fabs((B[c-1]-linha)/M[l-1][c-1]);
+        erros[c-1]=fabs(linha-variaveis[c-1]);
+    }
+    //imprime os erros
+    for(uint i=0; i<n; i++)
+        printf("%.5lf ", erros[i]);
+    
+    //Libera memória
+    free(erros);
+    printf("\n");
+}
