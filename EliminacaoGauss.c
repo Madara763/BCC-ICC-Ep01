@@ -72,16 +72,13 @@ real_t* eliminacaoGauss(real_t **M, real_t *B, uint n){
     //Isola as variaveis
     real_t* variaveis=malloc(sizeof(real_t)*n);
     if(!variaveis){ perror("Erro de Alocação!!!\n"); exit(1);}
-    -------------------------------------LOOP INFINITO NO I----------------------------
-    for(uint i=n-1; i>=0; --i){
+    
+    for(int i=n-1; i>=0; i--){
         linha=0.0;
-        for(uint k=n-1; k>i; --k){
-            linha+=M[i][k]*B[k];
-            printf("k = %d ", k);
-        }
-        printf("i = %d ", i);
-        //variaveis[i]=(B[i] - linha ) / M[i][i];
-        //printf("Variavel[%d]=%.5lf\n", i, variaveis[i]);
+        for(int k=n-1; k>i; k--)
+            linha+=M[i][k]*variaveis[k];
+        
+        variaveis[i]=(B[i] - linha ) / M[i][i];
     }
     return variaveis;
 }

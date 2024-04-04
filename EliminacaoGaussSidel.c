@@ -49,17 +49,17 @@ void pivoteamento_sidel(real_t **M, real_t *B, uint n){
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Implementa pivoteamento parcial 
-real_t* eliminacaoGaussSidel_Piv(real_t **M, real_t *B, uint n, real_t erro){
+real_t* eliminacaoGaussSidel_Piv(real_t **M, real_t *B, uint n, real_t erro, uint *itr){
     pivoteamento_sidel(M, B, n);
-    return eliminacaoGaussSidel(M, B, n, erro);    
+    return eliminacaoGaussSidel(M, B, n, erro, itr);    
 }
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Sem nenhum pivoteamento
 //Retorna o vetor com as variaveis e não altera a matriz e os T.I
-real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
+real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro, uint *itr){
+   
     real_t erro_atual=DBL_MAX, linha=0.0;
-    uint itr=0;
     //Aloca o vetor de variaveis e o vetor de variaveis da execução anterior
     real_t *variaveis=calloc(n, sizeof(real_t));
     real_t *variaveis_ante=calloc(n, sizeof(real_t));
@@ -68,9 +68,8 @@ real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
         perror("Erro de Alocação!!!\n");
         exit(1);
     }
-
-
-    while(erro_atual > erro && itr<MAX_ITR){
+    *itr=0;
+    while(erro_atual > erro && (*itr)<MAX_ITR){
         for(uint i=0; i<n; i++){
             linha=B[i];
             for(uint c=0; c<n; c++)
@@ -85,7 +84,7 @@ real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
         for(uint i=0; i<n-1; i++)
             if(erros[i]>erro_atual)
                 erro_atual=erros[i];
-        itr++;
+        (*itr)++;
     }
     free(variaveis_ante);
     free(erros);
@@ -94,8 +93,8 @@ real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro){
 
 //IMPRESSÂO 
 //Recebe a matriz, o vetor de t.i e o vetor de variaveis
-void imprimeGaussSidel(real_t **M, real_t *B, real_t *variaveis, uint n){
-    printf("GS Clássico:\n");
+void imprimeGaussSidel(real_t **M, real_t *B, real_t *variaveis, uint n, uint *itr){
+    printf("\nGS Clássico [%d]\n", *itr);
     printf("<Tempo_em_MS> ms\n");
     for(uint i=0; i<n; i++)
         printf("%.5lf ", variaveis[i]);

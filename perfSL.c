@@ -1,15 +1,14 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <math.h>
+#include "funcSL.h"
 #include "EliminacaoGauss.h"
 #include "EliminacaoGaussSidel.h"
 
 #define uint unsigned int
 #define real_t double
+#define ERRO_GS 0.005
 
-void copiaSL(real_t** matriz, real_t* termos, real_t** matriz_copia, real_t* termos_copia, uint n);
-void imprimeMatriz(real_t **M, real_t *B, unsigned int n);
-real_t* isola_variaveis(real_t **M, real_t *B, unsigned int n);
 int main(){
 	//Lê o tamanho da matriz
 	uint n;
@@ -51,21 +50,24 @@ int main(){
 	
 
 	//INICIO DOS METODOS
-	real_t* variaveis; 
+	real_t* variaveis;
+	uint itr;
 	imprimeMatriz(matriz, termos_ind, n);	
-	
-	//Teste GS
-	/*
-	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
-	variaveis=eliminacaoGaussSidel_Piv(matriz_copia, termos_ind_copia, n, 0.5);	
-	imprimeGaussSidel(matriz_copia, termos_ind, variaveis, n);
-	free(variaveis);
-	*/
 
 	//TESTE EG Clássico
-	variaveis=eliminacaoGauss_Piv(matriz, termos_ind, n);
-	imprimeGauss(matriz, termos_ind, variaveis, n);
+	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
+	variaveis=eliminacaoGauss_Piv(matriz_copia, termos_ind_copia, n);
+	imprimeGauss(matriz_copia, termos_ind_copia, variaveis, n);	
 	free(variaveis);
+
+		
+	//Teste GS
+	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
+	variaveis=eliminacaoGaussSidel_Piv(matriz_copia, termos_ind_copia, n, ERRO_GS, &itr);	
+	imprimeGaussSidel(matriz_copia, termos_ind, variaveis, n, &itr);
+	free(variaveis);
+
+	
 	
 
 	//libera memória e encerra o programa
@@ -81,24 +83,3 @@ int main(){
 	return 0;
 }//Main
 
-
-
-//Imprime a matriz e os termos
-void imprimeMatriz(real_t **M, real_t *B, unsigned int n){
-	for(uint l=0; l<n; l++){
-		for(uint c=0; c<n; c++){
-        	printf("%.5lf ", M[l][c]);
-    	}
-    	printf("%.5lf\n", B[l]);
-    }
-	printf("\n");
-}
-
-//Copia matriz para matriz_copia e os termos para termos_copia
-void copiaSL(real_t** matriz, real_t* termos, real_t** matriz_copia, real_t* termos_copia, uint n){
-	for(uint l=0; l<n; l++){
-		for(uint c=0; c<n; c++)
-			matriz_copia[l][c] = matriz[l][c];
-		termos_copia[l]=termos[l];
-	}
-}
