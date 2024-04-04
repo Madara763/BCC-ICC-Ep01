@@ -1,6 +1,6 @@
 #include "EliminacaoGauss.h"
 
-/*FUNÇÕES AUXILIARES*/
+/*FUNÇÕES AUvariaveisILIARES*/
 
 //Recebe a matriz, o vetor de t.i, as linhas a serem trocadas e o tamanho da matriz 
 //Retorna 1 se deu certo e 0 se deu errado
@@ -9,25 +9,25 @@ int trocaLinha(real_t **M, real_t *B, uint pivo, uint i, uint n){
         return 0;
     
     //Troca as linhas na matriz
-    real_t *aux=M[pivo];
+    real_t *auvariaveis=M[pivo];
     M[pivo]=M[i];
-    M[i]=aux;
+    M[i]=auvariaveis;
 
     //Troca os t.i
-    real_t aux_ti=B[pivo];
+    real_t auvariaveis_ti=B[pivo];
     B[pivo]=B[i];
-    B[i]=aux_ti;
+    B[i]=auvariaveis_ti;
 
     return 1;
 }   
 
 //Recebe a MAtriz e o numero da coluna
 //Retorna a linha onde há o maior valor na coluna recebida
-uint encontraMax(real_t **M, uint c){
-    uint max=M[0][c], linha=0;
+uint encontraMavariaveis(real_t **M, uint c){
+    uint mavariaveis=M[0][c], linha=0;
     for(uint i=1; i<c; ++i){
-        if(M[i][c] > max){
-            max=M[i][c];
+        if(M[i][c] > mavariaveis){
+            mavariaveis=M[i][c];
             linha=i;
         }
     }
@@ -38,7 +38,7 @@ uint encontraMax(real_t **M, uint c){
 void pivoteamento(real_t **M, real_t *B, uint n){
     uint pivo;
     for(uint i=0; i<n; ++i){
-        pivo=encontraMax(M, i);
+        pivo=encontraMavariaveis(M, i);
         if(pivo != i)
             trocaLinha(M, B, pivo, i, n);
     }
@@ -83,6 +83,27 @@ real_t* eliminacaoGauss(real_t **M, real_t *B, uint n){
     return variaveis;
 }
 
+//Algoritmo implementa a EG para matrizes tri-diagonais
+real_t* eliminacaoGauss_tri(real_t *B, real_t *c, real_t *d, real_t *a, uint n){
+
+    real_t mult=0.0;
+    for(uint i=0; i<n-1; i++) {
+        mult = a[ i ] / d[ i ];
+        a[i] = 0.0;
+        d[i+1]-= c[i]*mult;
+        B[i+1]-= B[i]*mult;
+    }
+    
+    real_t *variaveis=malloc(sizeof(real_t)*n);
+    if(!variaveis){ perror("Erro de Alocação!!!\n"); exit(1);}
+    
+    variaveis[n-1]= B[n-1] / d[n-1];
+    for (int i=n-2; i >= 0; i--)
+        variaveis[i]= (B[i] - c[i]*variaveis[i+1]) / d[i];
+    
+    return variaveis;
+}
+
 //IMPRESSÂO 
 //Recebe a matriz, o vetor de t.i e o vetor de variaveis
 void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
@@ -97,10 +118,7 @@ void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
     
     //calcula o erro e salva em erros
     real_t *erros=malloc(sizeof(real_t)*n);
-    if(!erros){
-        perror("Erro de Alocação!!!\n");
-        exit(1);
-    }
+    if(!erros){ perror("Erro de Alocação!!!\n"); exit(1); }
 
     for(uint l=n; l>0; l--){
         linha=0.0;
@@ -118,3 +136,31 @@ void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
     free(erros);
     printf("\n");
 }
+
+//Recebe os 3 vetores e o vetor de t.i
+void imprimeGauss_tri(real_t* B, real_t* vetC, real_t* vetD, real_t* vetA,real_t* variaveis, uint n){
+    printf("\nEG 3-Diagonal:\n");
+    printf("<Tempo_em_MS> ms\n");
+    for(uint i=0; i<n; i++)
+        printf("%.5lf ", variaveis[i]);
+    
+    printf("\n");
+
+    //calcula o erro e salva em erros
+    real_t *erros=malloc(sizeof(real_t)*n);
+    if(!erros){ perror("Erro de Alocação!!!\n"); exit(1); }
+
+    erros[n-1]=fabs(variaveis[n-1] - (B[n-1]/vetD[n-1]));
+    for(int linha=n-2; linha>=0; linha--)
+        erros[linha]= fabs( variaveis[linha] - ( (B[linha] - (vetC[linha] * B[linha+1])) / vetD[linha] ) );
+    
+    //imprime os erros
+    for(uint i=0; i<n; i++)
+        printf("%.5lf ", erros[i]);
+    
+    //Libera memória
+    free(erros);
+    printf("\n");
+
+}
+

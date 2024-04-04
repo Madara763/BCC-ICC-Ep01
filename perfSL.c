@@ -37,6 +37,13 @@ int main(){
 		perror("Erro de alocação.\n");
         return 1;
 	}
+
+	//Aloca os vetores para as matrizes tridiagonais
+	real_t *vetA, *vetD, *vetC;
+	vetA=malloc(sizeof(real_t)*n-1);
+	vetC=malloc(sizeof(real_t)*n-1);
+	vetD=malloc(sizeof(real_t)*n);
+	if(!vetA || !vetC || !vetD){	perror("Erro de alocação!!!\n"); exit(1);}
 	
 	//Lê a matriz e os termos do stdin
 	for(uint l=0; l<n; l++){
@@ -52,8 +59,10 @@ int main(){
 	//INICIO DOS METODOS
 	real_t* variaveis;
 	uint itr;
-	imprimeMatriz(matriz, termos_ind, n);	
+	imprimeMatriz(matriz, termos_ind, n);
+	
 
+	/**/
 	//TESTE EG Clássico
 	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
 	variaveis=eliminacaoGauss_Piv(matriz_copia, termos_ind_copia, n);
@@ -66,10 +75,16 @@ int main(){
 	variaveis=eliminacaoGaussSidel_Piv(matriz_copia, termos_ind_copia, n, ERRO_GS, &itr);	
 	imprimeGaussSidel(matriz_copia, termos_ind, variaveis, n, &itr);
 	free(variaveis);
-
 	
 	
-
+	//Teste EG Tri
+	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
+	tridiagonaliza(matriz_copia, termos_ind_copia, n, vetC, vetD, vetA);
+	variaveis=eliminacaoGauss_tri(termos_ind_copia, vetC, vetD, vetA, n);
+	imprimeGauss_tri(termos_ind_copia, vetC, vetD, vetA, variaveis, n);
+	free(variaveis);
+	
+	
 	//libera memória e encerra o programa
 	for(unsigned int i=0; i<n; i++){
 		free(matriz[i]);
@@ -79,6 +94,9 @@ int main(){
 	free(matriz_copia);
 	free(termos_ind);
 	free(termos_ind_copia);
+	free(vetA);
+	free(vetC);
+	free(vetD);
 	
 	return 0;
 }//Main

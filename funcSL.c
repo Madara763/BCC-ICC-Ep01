@@ -20,3 +20,18 @@ void copiaSL(real_t** matriz, real_t* termos, real_t** matriz_copia, real_t* ter
 		termos_copia[l]=termos[l];
 	}
 }
+
+//Aloca e retorna as 3 diagonais nos ponteiros que recebe
+void tridiagonaliza(real_t** matriz, real_t* termos,  uint n, real_t* vetC, real_t* vetD, real_t* vetA){
+
+	vetD[0]=matriz[0][0];
+	vetC[0]=matriz[0][1];
+	for(uint i=1; i<n-1; i++){
+		vetC[i]=matriz[i][i+1];
+		vetD[i]=matriz[i][i];
+		vetA[i-1]=matriz[i][i-1];
+	}
+	vetD[n-1]=matriz[n-1][n-1];
+	vetA[n-2]=matriz[n-1][n-2];
+
+}
