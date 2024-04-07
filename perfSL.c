@@ -1,13 +1,13 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
+
 #include "funcSL.h"
 #include "EliminacaoGauss.h"
 #include "EliminacaoGaussSidel.h"
+#include "utils.h"
 
-#define uint unsigned int
-#define real_t double
-#define ERRO_GS 0.005
+#define ERRO_GS 0.0001
 
 int main(){
 	//Lê o tamanho da matriz
@@ -58,33 +58,40 @@ int main(){
 
 	//INICIO DOS METODOS
 	real_t* variaveis;
+	rtime_t tempo;
 	uint itr;
-	imprimeMatriz(matriz, termos_ind, n);
+	//imprimeMatriz(matriz, termos_ind, n);
 	
-
-	/**/
 	//TESTE EG Clássico
 	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
-	variaveis=eliminacaoGauss_Piv(matriz_copia, termos_ind_copia, n);
-	imprimeGauss(matriz_copia, termos_ind_copia, variaveis, n);	
+	variaveis=eliminacaoGauss_Piv(matriz_copia, termos_ind_copia, n, &tempo);
+	imprimeGauss(matriz_copia, termos_ind_copia, variaveis, n, &tempo);	
 	free(variaveis);
-
+	
 		
 	//Teste GS
 	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
-	variaveis=eliminacaoGaussSidel_Piv(matriz_copia, termos_ind_copia, n, ERRO_GS, &itr);	
-	imprimeGaussSidel(matriz_copia, termos_ind, variaveis, n, &itr);
+	variaveis=eliminacaoGaussSidel_Piv(matriz_copia, termos_ind_copia, n, ERRO_GS, &itr, &tempo);	
+	imprimeGaussSidel(matriz_copia, termos_ind, variaveis, n, &itr, &tempo);
 	free(variaveis);
 	
 	
 	//Teste EG Tri
 	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
 	tridiagonaliza(matriz_copia, termos_ind_copia, n, vetC, vetD, vetA);
-	variaveis=eliminacaoGauss_tri(termos_ind_copia, vetC, vetD, vetA, n);
-	imprimeGauss_tri(termos_ind_copia, vetC, vetD, vetA, variaveis, n);
+	variaveis=eliminacaoGauss_tri(termos_ind_copia, vetC, vetD, vetA, n, &tempo);
+	imprimeGauss_tri(termos_ind_copia, vetC, vetD, vetA, variaveis, n, &tempo);
 	free(variaveis);
 	
-	
+
+	//Teste GS tri
+	copiaSL(matriz, termos_ind, matriz_copia, termos_ind_copia, n);
+	tridiagonaliza(matriz_copia, termos_ind_copia, n, vetC, vetD, vetA);
+	variaveis=eliminacaoGaussSidel_tri(termos_ind_copia, vetC, vetD, vetA, n, ERRO_GS, &itr, &tempo);
+	imprimeGaussSidel_tri(termos_ind_copia, vetC, vetD, vetA, variaveis, n, &itr, &tempo);
+	free(variaveis);
+
+
 	//libera memória e encerra o programa
 	for(unsigned int i=0; i<n; i++){
 		free(matriz[i]);

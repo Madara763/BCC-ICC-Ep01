@@ -49,16 +49,17 @@ void pivoteamento(real_t **M, real_t *B, uint n){
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Implementa pivoteamento parcial
-real_t* eliminacaoGauss_Piv(real_t **M, real_t *B, uint n){
-    pivoteamento(M, B, n);
-    return eliminacaoGauss(M, B, n);
+real_t* eliminacaoGauss_Piv(real_t **M, real_t *B, uint n, rtime_t *tempo){
+    //pivoteamento(M, B, n);
+    return eliminacaoGauss(M, B, n, tempo);
 }
 
 //Matriz M, Vetor B de termos independentes, Tamnaho da matriz n
 //Sem qualquer pivoteamento
-real_t* eliminacaoGauss(real_t **M, real_t *B, uint n){
+real_t* eliminacaoGauss(real_t **M, real_t *B, uint n, rtime_t *tempo){
     real_t mult, linha;
-    
+    //Execução do LIKWID
+    (*tempo)=timestamp();
     for(uint i=0; i<n; i++){
         for(uint k=i+1; k<n; k++){
             mult=M[k][i] / M[i][i];
@@ -68,7 +69,9 @@ real_t* eliminacaoGauss(real_t **M, real_t *B, uint n){
             B[k]-=B[i]*mult;
         }
     }
-
+    (*tempo)=(timestamp() - (*tempo));
+    //Execução do LIKWID
+    
     //Isola as variaveis
     real_t* variaveis=malloc(sizeof(real_t)*n);
     if(!variaveis){ perror("Erro de Alocação!!!\n"); exit(1);}
@@ -84,16 +87,20 @@ real_t* eliminacaoGauss(real_t **M, real_t *B, uint n){
 }
 
 //Algoritmo implementa a EG para matrizes tri-diagonais
-real_t* eliminacaoGauss_tri(real_t *B, real_t *c, real_t *d, real_t *a, uint n){
-
+real_t* eliminacaoGauss_tri(real_t *B, real_t *c, real_t *d, real_t *a, uint n, rtime_t *tempo){
     real_t mult=0.0;
+
+    //Execução do LIKWID
+    (*tempo)=timestamp();
     for(uint i=0; i<n-1; i++) {
         mult = a[ i ] / d[ i ];
         a[i] = 0.0;
         d[i+1]-= c[i]*mult;
         B[i+1]-= B[i]*mult;
     }
-    
+    (*tempo)=(timestamp() - (*tempo));
+    //Execução do LIKWID
+
     real_t *variaveis=malloc(sizeof(real_t)*n);
     if(!variaveis){ perror("Erro de Alocação!!!\n"); exit(1);}
     
@@ -106,9 +113,9 @@ real_t* eliminacaoGauss_tri(real_t *B, real_t *c, real_t *d, real_t *a, uint n){
 
 //IMPRESSÂO 
 //Recebe a matriz, o vetor de t.i e o vetor de variaveis
-void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
+void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n, rtime_t *tempo){
     printf("EG Clássico:\n");
-    printf("<Tempo_em_MS> ms\n");
+    printf("%.8lf ms\n", (*tempo));
     for(uint i=0; i<n; i++)
         printf("%.5lf ", variaveis[i]);
     
@@ -130,7 +137,7 @@ void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
     }
     //imprime os erros
     for(uint i=0; i<n; i++)
-        printf("%.5lf ", erros[i]);
+        printf("%.12lf ", erros[i]);
     
     //Libera memória
     free(erros);
@@ -138,9 +145,9 @@ void imprimeGauss(real_t **M, real_t *B, real_t *variaveis, uint n){
 }
 
 //Recebe os 3 vetores e o vetor de t.i
-void imprimeGauss_tri(real_t* B, real_t* vetC, real_t* vetD, real_t* vetA,real_t* variaveis, uint n){
+void imprimeGauss_tri(real_t* B, real_t* vetC, real_t* vetD, real_t* vetA,real_t* variaveis, uint n, rtime_t *tempo){
     printf("\nEG 3-Diagonal:\n");
-    printf("<Tempo_em_MS> ms\n");
+    printf("%.8lf ms\n", (*tempo));
     for(uint i=0; i<n; i++)
         printf("%.5lf ", variaveis[i]);
     
@@ -156,7 +163,7 @@ void imprimeGauss_tri(real_t* B, real_t* vetC, real_t* vetD, real_t* vetA,real_t
     
     //imprime os erros
     for(uint i=0; i<n; i++)
-        printf("%.5lf ", erros[i]);
+        printf("%.12lf ", erros[i]);
     
     //Libera memória
     free(erros);
