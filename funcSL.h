@@ -1,6 +1,7 @@
 /*
 Biblioteca com funções auxiliares de manipulação de SL
 Davi Lazzarin 04/04/2024
+GRR - 20204398
 */
 #include <stdio.h>
 #include <stdlib.h>

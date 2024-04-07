@@ -1,6 +1,5 @@
 #include "funcSL.h"
 
-
 //Imprime a matriz e os termos
 void imprimeMatriz(real_t **M, real_t *B, unsigned int n){
 	for(uint l=0; l<n; l++){

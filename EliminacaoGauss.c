@@ -1,6 +1,6 @@
 #include "EliminacaoGauss.h"
 
-/*FUNÇÕES AUvariaveisILIARES*/
+/*FUNÇÕES AUXILIARES*/
 
 //Recebe a matriz, o vetor de t.i, as linhas a serem trocadas e o tamanho da matriz 
 //Retorna 1 se deu certo e 0 se deu errado

@@ -1,7 +1,8 @@
 /*
 Biblioteca que implementa o algoritmo de
-Eliminação de Gauss com pivoteamento parcial
-Davi Lazzarin - 31/03/2024
+Eliminação de GaussSidel com pivoteamento parcial
+Davi Lazzarin - 29/03/2024
+GRR - 20204398
 */
 
 #ifndef _ELIMINA_GAUSS_SIDEL_
