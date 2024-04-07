@@ -10,6 +10,7 @@ Davi Lazzarin - 31/03/2024
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <likwid.h>
 #include "utils.h"
 
 

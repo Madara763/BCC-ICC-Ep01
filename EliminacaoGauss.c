@@ -58,7 +58,10 @@ real_t* eliminacaoGauss_Piv(real_t **M, real_t *B, uint n, rtime_t *tempo){
 //Sem qualquer pivoteamento
 real_t* eliminacaoGauss(real_t **M, real_t *B, uint n, rtime_t *tempo){
     real_t mult, linha;
-    //Execução do LIKWID
+    
+	//Execução do LIKWID
+	LIKWID_MARKER_INIT;
+	LIKWID_MARKER_START ("EG_Classico");
     (*tempo)=timestamp();
     for(uint i=0; i<n; i++){
         for(uint k=i+1; k<n; k++){
@@ -70,7 +73,10 @@ real_t* eliminacaoGauss(real_t **M, real_t *B, uint n, rtime_t *tempo){
         }
     }
     (*tempo)=(timestamp() - (*tempo));
-    //Execução do LIKWID
+    
+	LIKWID_MARKER_STOP ("EG_Classico");    
+  	LIKWID_MARKER_CLOSE;
+	//Execução do LIKWID
     
     //Isola as variaveis
     real_t* variaveis=malloc(sizeof(real_t)*n);
@@ -91,6 +97,9 @@ real_t* eliminacaoGauss_tri(real_t *B, real_t *c, real_t *d, real_t *a, uint n, 
     real_t mult=0.0;
 
     //Execução do LIKWID
+	LIKWID_MARKER_INIT;
+    LIKWID_MARKER_START ("EG_3_Diagonal");
+
     (*tempo)=timestamp();
     for(uint i=0; i<n-1; i++) {
         mult = a[ i ] / d[ i ];
@@ -99,6 +108,10 @@ real_t* eliminacaoGauss_tri(real_t *B, real_t *c, real_t *d, real_t *a, uint n, 
         B[i+1]-= B[i]*mult;
     }
     (*tempo)=(timestamp() - (*tempo));
+
+	LIKWID_MARKER_STOP ("EG_3_Diagonal");
+    LIKWID_MARKER_CLOSE;
+
     //Execução do LIKWID
 
     real_t *variaveis=malloc(sizeof(real_t)*n);

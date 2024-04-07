@@ -1,9 +1,10 @@
-CFLAGS = -Wall -g -O0 # gerar "warnings" detalhados e infos de depuração
- 
+#gerar "warnings" detalhados e infos de depuração
+CFLAGS = -O0 -I${LIKWID_HOME}/include -DLIKWID_PERFMON
+LDLIBS= -L${LIKWID_HOME}/lib -llikwid
 objs = perfSL.o EliminacaoGauss.o EliminacaoGaussSidel.o funcSL.o utils.o
 
 # regra default (primeira regra)
-all: perfSL
+all:	perfSL
  
 # regras de ligacao
 perfSL:	$(objs)

@@ -68,7 +68,11 @@ real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro, uint *i
         perror("Erro de Alocação!!!\n");
         exit(1);
     }
+
     //Execução do LIKWID
+	LIKWID_MARKER_INIT;
+	LIKWID_MARKER_START ("GS_Classico");
+
     (*tempo)=timestamp();
     *itr=0;
     while(erro_atual > erro && (*itr)<MAX_ITR){
@@ -89,7 +93,11 @@ real_t* eliminacaoGaussSidel(real_t **M, real_t *B, uint n, real_t erro, uint *i
         (*itr)++;
     }
     (*tempo)=(timestamp() - (*tempo));
+	
+	LIKWID_MARKER_STOP ("GS_Classico");  
+  	LIKWID_MARKER_CLOSE;
     //Execução do LIKWID
+
     free(variaveis_ante);
     free(erros);
     return variaveis;
@@ -109,6 +117,9 @@ real_t* eliminacaoGaussSidel_tri(real_t *B, real_t *c, real_t *d, real_t *a, uin
     }
 
     //Execução do LIKWID
+	LIKWID_MARKER_INIT;
+  	LIKWID_MARKER_START ("GS_3_Diagonal");
+	
     (*tempo)=timestamp();
     *itr=0;
     while (erro_atual > erro_max && (*itr)<MAX_ITR) {
@@ -134,6 +145,9 @@ real_t* eliminacaoGaussSidel_tri(real_t *B, real_t *c, real_t *d, real_t *a, uin
         (*itr)++;
     }
     (*tempo)=(timestamp() - (*tempo));
+	
+	LIKWID_MARKER_STOP ("GS_3_Diagonal");  
+  	LIKWID_MARKER_CLOSE;
     //Execução do LIKWID
 
     free(erros);

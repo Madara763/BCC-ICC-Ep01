@@ -10,6 +10,7 @@ Davi Lazzarin - 29/03/2024
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <likwid.h>
 #include "utils.h"
 
 #define real_t double
